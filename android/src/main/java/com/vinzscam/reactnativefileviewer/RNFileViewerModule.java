@@ -80,8 +80,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        // String extension = MimeTypeMap.getFileExtensionFromUrl(path).toLowerCase();
-        String mimeType = getMimeType(contentUri); // MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        String mimeType = getMimeType(contentUri);
 
         Log.i("JAVA >>>", "mimeType: " + mimeType);
         Log.i("JAVA >>>", "contentUri: " + contentUri.toString());
@@ -90,7 +89,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
 
         shareIntent.setAction(Intent.ACTION_VIEW);
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        // shareIntent.setDataAndTypeAndNormalize(contentUri, mimeType);
+        shareIntent.setType(mimeType);
         shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
         Intent intentActivity;
 
