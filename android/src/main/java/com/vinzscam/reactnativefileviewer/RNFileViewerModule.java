@@ -60,9 +60,6 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
         Boolean showOpenWithDialog = options.hasKey(SHOW_OPEN_WITH_DIALOG) ? options.getBoolean(SHOW_OPEN_WITH_DIALOG) : false;
         Boolean showStoreSuggestions = options.hasKey(SHOW_STORE_SUGGESTIONS) ? options.getBoolean(SHOW_STORE_SUGGESTIONS) : false;
 
-        Log.i("JAVA >>>", "open: path:" + path);
-        // Log.i("JAVA >>>", "open: currentId:" + RN_FILE_VIEWER_REQUEST);
-
         if (path.startsWith("content://")) {
             contentUri = Uri.parse(path);
         } else {
@@ -79,8 +76,6 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
         }
 
         if (contentUri == null) {
-            Log.i("JAVA >>>", "contentUri is NULL");
-
             sendEvent(OPEN_EVENT, currentId, "Invalid file");
             return;
         }
@@ -88,7 +83,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
         // String extension = MimeTypeMap.getFileExtensionFromUrl(path).toLowerCase();
         String mimeType = getMimeType(contentUri); // MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
 
-        // Log.i("JAVA >>>", "mimeType: " + mimeType);
+        Log.i("JAVA >>>", "mimeType: " + mimeType);
         Log.i("JAVA >>>", "contentUri: " + contentUri.toString());
 
         Intent shareIntent = new Intent();
@@ -117,7 +112,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
                 sendEvent(OPEN_EVENT, currentId, e.getMessage());
             }
         } else {
-            Log.i("JAVA >>>", "DID NOT RESOLVE ACTIVITY");
+          Log.i("JAVA >>>", "DID NOT RESOLVE ACTIVITY");
             try {
                 if (showStoreSuggestions) {
                     if(mimeType == null) {
@@ -126,7 +121,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
                     Intent storeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://search?q=" + mimeType + "&c=apps"));
                     getCurrentActivity().startActivity(storeIntent);
                 }
-                throw new Exception("No app associated with this mime type");
+                throw new Exception("Couldn't find an app to open that type of file");
             }
             catch(Exception e) {
                 sendEvent(OPEN_EVENT, currentId, e.getMessage());
