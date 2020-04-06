@@ -48,10 +48,8 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
             ContentResolver cr = reactContext.getContentResolver();
             mimeType = cr.getType(uri);
         } else {
-            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
-                    .toString());
-            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                    fileExtension.toLowerCase());
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension.toLowerCase());
         }
         return mimeType;
     }
@@ -65,7 +63,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
         Log.i("JAVA >>>", "open: path:" + path);
         // Log.i("JAVA >>>", "open: currentId:" + RN_FILE_VIEWER_REQUEST);
 
-        if(path.startsWith("content://")) {
+        if (path.startsWith("content://")) {
             contentUri = Uri.parse(path);
         } else {
             File newFile = new File(path);
@@ -80,7 +78,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
             }
         }
 
-        if(contentUri == null) {
+        if (contentUri == null) {
             Log.i("JAVA >>>", "contentUri is NULL");
 
             sendEvent(OPEN_EVENT, currentId, "Invalid file");
@@ -91,13 +89,13 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
         String mimeType = getMimeType(contentUri); // MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
 
         Log.i("JAVA >>>", "mimeType: " + mimeType);
-        // Log.i("JAVA >>>", "extension: " + extension);
+        Log.i("JAVA >>>", "contentUri: " + contentUri.toString());
 
         Intent shareIntent = new Intent();
 
         shareIntent.setAction(Intent.ACTION_VIEW);
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        shareIntent.setDataAndType(contentUri, mimeType);
+        shareIntent.setDataAndTypeAndNormalize(contentUri, mimeType);
         shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
         Intent intentActivity;
 
@@ -110,6 +108,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
         PackageManager pm = getCurrentActivity().getPackageManager();
 
         if (shareIntent.resolveActivity(pm) != null) {
+            Log.i("JAVA >>>", "RESOLVED ACTIVITY");
             try {
                 getCurrentActivity().startActivityForResult(intentActivity, currentId + RN_FILE_VIEWER_REQUEST);
                 sendEvent(OPEN_EVENT, currentId, null);
@@ -118,6 +117,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
                 sendEvent(OPEN_EVENT, currentId, e.getMessage());
             }
         } else {
+            Log.i("JAVA >>>", "DID NOT RESOLVE ACTIVITY");
             try {
                 if (showStoreSuggestions) {
                     if(mimeType == null) {
@@ -142,7 +142,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
     private void sendEvent(String eventName, Integer currentId, String errorMessage) {
         WritableMap params = Arguments.createMap();
         params.putInt("id", currentId);
-        if(errorMessage != null) {
+        if (errorMessage != null) {
             params.putString("error", errorMessage);
         }
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
