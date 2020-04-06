@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.util.Log;
 import androidx.core.content.FileProvider;
 import android.webkit.MimeTypeMap;
 
@@ -70,6 +71,9 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
     String extension = MimeTypeMap.getFileExtensionFromUrl(path).toLowerCase();
     String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
 
+    Log.i("JAVA >>>", "mimeType: " + mimeType);
+    Log.i("JAVA >>>", "extension: " + extension);
+
     Intent shareIntent = new Intent();
 
     shareIntent.setAction(Intent.ACTION_VIEW);
@@ -94,7 +98,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
       catch(Exception e) {
         sendEvent(OPEN_EVENT, currentId, e.getMessage());
       }
-      } else {
+    } else {
         try {
           if (showStoreSuggestions) {
             if(mimeType == null) {
