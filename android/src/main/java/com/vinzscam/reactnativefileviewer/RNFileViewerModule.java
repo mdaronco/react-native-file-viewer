@@ -57,7 +57,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void open(String path, ReadableMap options) {
+    public void open(String path, Integer currentId, ReadableMap options) {
         Uri contentUri = null;
         Boolean showOpenWithDialog = options.hasKey(SHOW_OPEN_WITH_DIALOG) ? options.getBoolean(SHOW_OPEN_WITH_DIALOG) : false;
         Boolean showStoreSuggestions = options.hasKey(SHOW_STORE_SUGGESTIONS) ? options.getBoolean(SHOW_STORE_SUGGESTIONS) : false;
@@ -75,7 +75,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
                 contentUri = FileProvider.getUriForFile(getCurrentActivity(), authority, newFile);
             }
             catch(IllegalArgumentException e) {
-                sendEvent(OPEN_EVENT, RN_FILE_VIEWER_REQUEST, e.getMessage());
+                sendEvent(OPEN_EVENT, currentId, e.getMessage());
                 return;
             }
         }
@@ -83,7 +83,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
         if(contentUri == null) {
             Log.i("JAVA >>>", "contentUri is NULL");
 
-            sendEvent(OPEN_EVENT, RN_FILE_VIEWER_REQUEST, "Invalid file");
+            sendEvent(OPEN_EVENT, currentId, "Invalid file");
             return;
         }
 
@@ -111,11 +111,11 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
 
         if (shareIntent.resolveActivity(pm) != null) {
             try {
-                getCurrentActivity().startActivityForResult(intentActivity, RN_FILE_VIEWER_REQUEST);
-                sendEvent(OPEN_EVENT, RN_FILE_VIEWER_REQUEST, null);
+                getCurrentActivity().startActivityForResult(intentActivity, currentId + RN_FILE_VIEWER_REQUEST);
+                sendEvent(OPEN_EVENT, currentId, null);
             }
             catch(Exception e) {
-                sendEvent(OPEN_EVENT, RN_FILE_VIEWER_REQUEST, e.getMessage());
+                sendEvent(OPEN_EVENT, currentId, e.getMessage());
             }
         } else {
             try {
@@ -129,7 +129,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
                 throw new Exception("No app associated with this mime type");
             }
             catch(Exception e) {
-                sendEvent(OPEN_EVENT, RN_FILE_VIEWER_REQUEST, e.getMessage());
+                sendEvent(OPEN_EVENT, currentId, e.getMessage());
             }
         }
     }
