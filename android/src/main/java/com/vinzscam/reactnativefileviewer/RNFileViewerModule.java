@@ -48,6 +48,9 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
     Boolean showOpenWithDialog = options.hasKey(SHOW_OPEN_WITH_DIALOG) ? options.getBoolean(SHOW_OPEN_WITH_DIALOG) : false;
     Boolean showStoreSuggestions = options.hasKey(SHOW_STORE_SUGGESTIONS) ? options.getBoolean(SHOW_STORE_SUGGESTIONS) : false;
 
+    Log.i("JAVA >>>", "open: path:" + path);
+    Log.i("JAVA >>>", "open: currentId:" + currentId);
+
     if(path.startsWith("content://")) {
       contentUri = Uri.parse(path);
     } else {
@@ -64,6 +67,8 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
     }
 
     if(contentUri == null) {
+      Log.i("JAVA >>>", "contentUri is NULL");
+
       sendEvent(OPEN_EVENT, currentId, "Invalid file");
       return;
     }
