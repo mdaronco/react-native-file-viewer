@@ -89,7 +89,7 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
 
         shareIntent.setAction(Intent.ACTION_VIEW);
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        shareIntent.setType(mimeType);
+        shareIntent.setDataAndType(contentUri, mimeType);
         shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
         Intent intentActivity;
 
